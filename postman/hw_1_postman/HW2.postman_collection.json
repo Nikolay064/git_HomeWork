@@ -1,0 +1,455 @@
+{
+	"info": {
+		"_postman_id": "cc083ba4-f1c6-431c-b27c-04d5be8a4804",
+		"name": "HW1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://162.55.220.72:5005/first",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://162.55.220.72:5005/first",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"first"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://162.55.220.72:5005/get_method",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://162.55.220.72:5005/get_method?name=gomer&age=39",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"get_method"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "gomer"
+						},
+						{
+							"key": "age",
+							"value": "39"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://162.55.220.72:5005/user_info_2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"user_info_2\", function () {\r",
+							"\r",
+							"    request = pm.environment.get('salary');\r",
+							"    age = pm.environment.get('age');\r",
+							"    name = pm.environment.get('name');\r",
+							"\r",
+							"    jsonDataResponse = pm.response.json();\r",
+							"    var jsonDataRequest = {};\r",
+							"    for (var i = 0; i < pm.request.body.formdata.toJSON().length; i++){\r",
+							"        jsonDataRequest[pm.request.body.formdata.toJSON()[i].key] = pm.request.body.formdata.toJSON()[i].value;\r",
+							"    };\r",
+							"    \r",
+							"    pm.expect(jsonDataResponse.start_qa_salary).not.eq(undefined);\r",
+							"    pm.expect(jsonDataResponse.qa_salary_after_6_months).not.eq(undefined);\r",
+							"    pm.expect(jsonDataResponse.qa_salary_after_12_months).not.eq(undefined);\r",
+							"    pm.expect(jsonDataResponse['qa_salary_after_1.5_year']).not.eq(undefined);\r",
+							"    pm.expect(jsonDataResponse['qa_salary_after_3.5_years']).not.eq(undefined);\r",
+							"    pm.expect(jsonDataResponse.person).not.eq(undefined);\r",
+							"\r",
+							"    pm.expect(jsonDataResponse.start_qa_salary).to.eql(request[0]);\r",
+							"    pm.expect(jsonDataResponse.qa_salary_after_6_months).to.eql(request[0]*2);\r",
+							"    pm.expect(jsonDataResponse.qa_salary_after_12_months).to.eql(request[0]*2.7);\r",
+							"    pm.expect(jsonDataResponse['qa_salary_after_1.5_year']).to.eql(request[0]*3.3);\r",
+							"    pm.expect(jsonDataResponse['qa_salary_after_3.5_years']).to.eql(request[0]*3.8);\r",
+							"    pm.expect(jsonDataResponse.person.u_name[1]).to.eql(request[0]);\r",
+							"    pm.expect(jsonDataResponse.person.u_age).to.eql(parseInt(jsonDataRequest.age)); // ? некорректные требования ? №20 vs №1\r",
+							"\r",
+							"    for (var key in jsonDataResponse.person) {\r",
+							"        console.log(jsonDataResponse.person[key]);\r",
+							"    }\r",
+							"\r",
+							"\r",
+							"});\r",
+							"\r",
+							"pm.test(\"user_info_2\", function () {\r",
+							"    pm.expect(jsonDataResponse.u_salary_5_years).to.eql(request[0]*4.2);\r",
+							"    // ! параметра u_salary_5_years не существует ! №21\r",
+							"    });\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "gomer",
+							"type": "text"
+						},
+						{
+							"key": "age",
+							"value": "39",
+							"type": "text"
+						},
+						{
+							"key": "salary",
+							"value": "5000",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://162.55.220.72:5005/user_info_2",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"user_info_2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://162.55.220.72:5005/user_info_3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"user_info_3\", function () {\r",
+							"    var jsonDataResponse = pm.response.json();\r",
+							"    pm.expect(jsonDataResponse.name).to.eql(\"gomer\");\r",
+							"    pm.expect(jsonDataResponse.age).to.eql(\"39\");\r",
+							"    pm.expect(jsonDataResponse.salary).to.eql(5000);\r",
+							"\r",
+							"    console.log(jsonDataResponse.family)\r",
+							"\r",
+							"    pm.expect(jsonDataResponse.family.u_salary_1_5_year).to.eql(request.data.salary*4);\r",
+							"\r",
+							"var jsonDataRequest = pm.request.toJSON();\r",
+							"pm.expect(jsonDataRequest.body.formdata[0].value).to.eql(jsonDataResponse.name);\r",
+							"pm.expect(jsonDataRequest.body.formdata[1].value).to.eql(jsonDataResponse.age);\r",
+							"pm.expect(jsonDataRequest.body.formdata[2].value).to.eql(jsonDataResponse.salary.toString());\r",
+							"\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "gomer",
+							"type": "text"
+						},
+						{
+							"key": "age",
+							"value": "39",
+							"type": "text"
+						},
+						{
+							"key": "salary",
+							"value": "5000",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://162.55.220.72:5005/user_info_3",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"user_info_3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://162.55.220.72:5005/object_info_1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://162.55.220.72:5005/object_info_1?name=gomer&age=39&weight=94",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"object_info_1"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "gomer"
+						},
+						{
+							"key": "age",
+							"value": "39"
+						},
+						{
+							"key": "weight",
+							"value": "94"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://162.55.220.72:5005/object_info_2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://162.55.220.72:5005/object_info_2?name=gomer&age=39&salary=5000",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"object_info_2"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "gomer"
+						},
+						{
+							"key": "age",
+							"value": "39"
+						},
+						{
+							"key": "salary",
+							"value": "5000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://162.55.220.72:5005/object_info_3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"object_info_3\", function () {\r",
+							"    var jsonDataResponse = pm.response.json();\r",
+							"    var jsonDataRequest = pm.request.url.query.toJSON();\r",
+							"\r",
+							"    pm.expect(jsonDataResponse.name).to.eql(jsonDataRequest[0].value);\r",
+							"    pm.expect(jsonDataResponse.age).to.eql(jsonDataRequest[1].value);\r",
+							"    pm.expect(jsonDataResponse.salary).to.eql(parseInt(jsonDataRequest[2].value));\r",
+							"\r",
+							"    console.log(\"jsonDataResponse: \", jsonDataResponse);\r",
+							"    console.log(\"jsonDataRequest: \", jsonDataRequest);\r",
+							"\r",
+							"    console.log(\"jsonDataResponse.family: \", jsonDataResponse.family);\r",
+							"\r",
+							"    if(jsonDataResponse.family.pets.dog.name != null){\r",
+							"        pm.expect(jsonDataResponse.family.pets.dog.name).to.eql(\"Luky\");\r",
+							"    }\r",
+							"\r",
+							"        if(jsonDataResponse.family.pets.dog.age != null){\r",
+							"        pm.expect(jsonDataResponse.family.pets.dog.age).to.eql(4);\r",
+							"    }\r",
+							"\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://162.55.220.72:5005/object_info_3?name=gomer&age=39&salary=5000",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"object_info_3"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "gomer"
+						},
+						{
+							"key": "age",
+							"value": "39"
+						},
+						{
+							"key": "salary",
+							"value": "5000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://162.55.220.72:5005/object_info_4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"object_info_4\", function () {\r",
+							"    var jsonDataResponse = pm.response.json();\r",
+							"    var jsonDataRequest = pm.request.url.query.toJSON();\r",
+							"\r",
+							"    pm.expect(jsonDataResponse.name).to.eql(jsonDataRequest[0].value);\r",
+							"    pm.expect(jsonDataResponse.age).to.eql(parseInt(jsonDataRequest[1].value));\r",
+							"\r",
+							"    console.log(\"Параметр salary из request = \",jsonDataRequest[2].value);\r",
+							"    console.log(\"Параметр salary из response = \",jsonDataResponse.salary);\r",
+							"\r",
+							"    for (var i = 0; i < 3; i++){\r",
+							"        console.log(\"Параметр salary из response = \",jsonDataResponse.salary[i]);\r",
+							"    }\r",
+							"\r",
+							"    for (var i = 0; i < 3; i++){\r",
+							"        pm.expect(parseInt(jsonDataResponse.salary[i])).to.eql(parseInt(jsonDataRequest[2].value)*(i+1));\r",
+							"    }\r",
+							"\r",
+							"    pm.environment.set('name');\r",
+							"    pm.environment.set('age');\r",
+							"    pm.environment.set('salary');\r",
+							"\r",
+							"    pm.environment.set('name', jsonDataResponse.name);\r",
+							"    pm.environment.set('age', jsonDataResponse.age);\r",
+							"    pm.environment.set('salary', jsonDataResponse.salary);\r",
+							"\r",
+							"    for (var i = 0; i < 3; i++){\r",
+							"        var temp_salary = pm.environment.get('salary');\r",
+							"       console.log(\"Параметр salary из environment = \", temp_salary[i]);\r",
+							"    }\r",
+							"    \r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://162.55.220.72:5005/object_info_4?name=gomer&age=39&salary=5000",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"object_info_4"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "gomer"
+						},
+						{
+							"key": "age",
+							"value": "39"
+						},
+						{
+							"key": "salary",
+							"value": "5000"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
